@@ -8,15 +8,17 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Vue2 Datatable</a>
+        <a class="navbar-brand" href="#">
+          vue2-datatable-component
+        </a>
       </div>
       <div class="collapse navbar-collapse" id="nav-collapse">
         <i class="navbar-text">
-          The Best Datatable for Vue.js 2.x which never sucks
+          The best Datatable for Vue.js 2.x which never sucks
         </i>
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a target="_blank" href="https://OneWayTech.github.io/vue2-datatable/docs/_book">
+            <a target="_blank" href="https://OneWayTech.github.io/vue2-datatable/doc">
               <i class="fa fa-book"></i> Documentation
             </a>
           </li>
@@ -37,38 +39,61 @@
         <li :class="{ active: showTab === 'advanced' }">
           <a href="#advanced">Advanced</a>
         </li>
+        <li :class="{ active: showTab === 'fixed' }">
+          <a href="#fixed">Fixed ( header and columns )</a>
+        </li>
       </ul>
-      <div class="tab-content m-t-10">
+      <div class="tab-content" style="margin-top: 10px">
         <div class="tab-pane" :class="{ active: showTab === 'basic' }">
           <basic v-if="showTab === 'basic'" />
         </div>
         <div class="tab-pane" :class="{ active: showTab === 'advanced' }">
           <advanced v-if="showTab === 'advanced'" />
         </div>
+        <div class="tab-pane" :class="{ active: showTab === 'fixed' }">
+          <fixed v-if="showTab === 'fixed'" />
+        </div>
       </div>
+      <hr />
+      <button class="btn btn-default btn-block" @click="viewSource">
+        <i class="fa fa-code"></i>
+        &nbsp; View Source &nbsp;
+        <i class="fa fa-github"></i>
+      </button>
     </div>
 
     <footer>
-      Open Devtools - Console to see what <code>_mockData</code> receive and respond
+      Open Devtools - Console to see what <code>_mockData</code> receives and responds
     </footer>
   </div>
 </template>
 <script>
 import Basic from './Basic/'
 import Advanced from './Advanced/'
-const getCurHash = () => location.hash.replace(/^#/, '')
+import Fixed from './Fixed/'
+import capitalize from 'lodash/capitalize'
 
 export default {
-  components: { Basic, Advanced },
+  components: { Basic, Advanced, Fixed },
   data: () => ({
-    showTab: getCurHash() || 'basic'
+    showTab: getCurHash()
   }),
   mounted () {
     $(window).on('hashchange', () => {
       this.showTab = getCurHash()
       console.clear()
     })
+  },
+  methods: {
+    viewSource () {
+      window.open(`https://github.com/OneWayTech/vue2-datatable/blob/master/examples/src/${capitalize(this.showTab)}/index.vue`)
+    }
   }
+}
+
+function getCurHash() {
+  // display Advanced example by default
+  return location.hash.replace(/^#/, '') || 'advanced'
 }
 </script>
 <style>
@@ -85,8 +110,5 @@ footer {
   font-size: 12px;
   text-align: center;
   color: #afafaf;
-}
-.m-t-10 {
-  margin-top: 10px;
 }
 </style>
