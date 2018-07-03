@@ -1,11 +1,14 @@
 <template>
-  <label name="PageSizeSelect">
-    <select class="form-control input-sm -page-size-select" v-model="query.limit"
+<div>
+  <label class="-page-size-select-label" name="PageSizeSelect">
+    <select class="form-control input-sm -page-size-select"  v-model="query.limit"
       @change="query.offset = 0 /* reset to the first page */">
       <option v-for="i in pageSizeOptions" :value="i">{{ i }}</option>
     </select>
-    {{ $i18nForDatatable('items / page') }}
   </label>
+ <span class="grid-item-per-page"> {{ $i18nForDatatable('items / page') }} </span>
+</div>
+
 </template>
 <script>
 export default {
@@ -18,7 +21,12 @@ export default {
 </script>
 <style>
 .-page-size-select {
-  display: inline-block;
+  margin: 0;
   width: 65px;
+  border-radius: 0 !important;
+ 
+}
+.-page-size-select-label {
+  margin: 0;
 }
 </style>

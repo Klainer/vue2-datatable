@@ -1,5 +1,5 @@
 <template>
-  <a href="#" @click.prevent="handleClick" name="HeadSort">
+  <a href="#" @click.prevent="handleClick" class="mh-table-sort" name="HeadSort">
     <i :class="cls"></i>
   </a>
 </template>
@@ -46,3 +46,8 @@ export default {
   }
 }
 </script>
+<style>
+.mh-table-sort{
+  padding-left: 10px;
+}
+</style>

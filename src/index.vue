@@ -1,5 +1,5 @@
 <template>
-  <div name="Datatable">
+  <div name="Datatable" class="mh-datatable">
     <div v-if="$slots.default || HeaderSettings" class="clearfix" style="margin-bottom: 10px">
       <header-settings v-if="HeaderSettings" class="pull-right"
         :columns="columns" :support-backup="supportBackup">
@@ -9,15 +9,21 @@
 
     <tbl v-bind="$props" />
     
-    <div v-if="Pagination" class="row" style="margin-top: 10px">
-      <div class="col-sm-6" style="white-space: nowrap">
-        <strong>
-          {{ $i18nForDatatable('Total') }} {{ total }} {{ $i18nForDatatable(',') }}
-        </strong>
-        <page-size-select :query="query" :page-size-options="pageSizeOptions" />
-      </div>
-      <div class="col-sm-6">
-        <pagination class="pull-right" :total="total" :query="query" />
+    <div v-if="Pagination" class="tablePagination">
+      <div class="row">
+        <div class="col-sm-6">
+          <pagination class="pull-left" :total="total" :query="query" />
+          <page-size-select :query="query" :page-size-options="pageSizeOptions" />
+        </div>
+
+        <div class="col-sm-6" style="white-space: nowrap">
+
+          <div  class="pull-right grid-pagination-total" >
+            {{ $i18nForDatatable('Total') }} {{ total }} 
+            <!-- {{ $i18nForDatatable(',') }} -->
+          </div>
+        
+        </div>
       </div>
     </div>
   </div>
@@ -107,5 +113,41 @@ export default {
 }
 .fade-enter, .fade-leave-active {
   opacity: 0;
+}
+.tablePagination {
+
+  color: #444;
+  background-color: #fafafa;
+  border-color: #e6e6e6;
+  line-height: 1.286em;
+  padding: 10px 15px;
+  border-width: 1px 0 0;
+  clear: both;
+  overflow: hidden;
+  position: relative;
+  border-style: solid;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  border-left: 1px solid rgba(0, 0, 0, 0.125);
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.tablePagination ul.pagination .page-item a {
+  border-radius: 0;
+}
+
+.grid-pagination-total{
+  padding-top: 9px;
+}
+
+.mh-datatable thead{
+  border-color: #e6e6e6;
+  color: #444;
+  background-color: #fafafa;
+}
+.mh-datatable thead th {
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
