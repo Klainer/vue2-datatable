@@ -9,6 +9,8 @@ import debounce from 'lodash/debounce'
  */
 export default function (els, callback) {
   let currentDriver
+
+  console.log(els);
   
   function syncScroll(me, others) {
     me
@@ -17,8 +19,11 @@ export default function (els, callback) {
         currentDriver = me
 
         let offsetLeft = me.scrollLeft()
+        let offsetTop = me.scrollTop()
+
         others.scrollLeft(offsetLeft)
-        
+        others.scrollTop(offsetTop)
+
         callback(offsetLeft)
       }))
       // scroll stops

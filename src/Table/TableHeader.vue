@@ -4,7 +4,7 @@
       <th v-if="shouldRenderSelection" key="--th-multi">
         <multi-select :selection="selection" :rows="data" />
       </th>
-      <th v-for="(col, idx) in columns"
+      <th v-for="(col, idx) in tableColumns"
         :key="col.title || col.field || idx"
         :class="col.thClass" :style="col.thStyle">
         <!-- <th> component (thComp) -->
@@ -37,6 +37,18 @@ import shouldRenderSelection from '../_mixins/shouldRenderSelection'
 export default {
   name: 'TableHeader',
   components: { HeadSort, MultiSelect },
-  mixins: [props, shouldRenderSelection]
+  mixins: [props, shouldRenderSelection],
+  computed: {
+    tableColumns() {
+      if(this.leftFixed){
+        return this.columns.filter(col => col.fixed === true || col.fixed === 'left' );
+      } else if (this.rightFixed){
+        return this.columns.filter(col => col.fixed === 'right' );
+      } else {
+        console.log("aa");
+        return this.columns.filter(col => col.fixed !== true && col.fixed !== 'left' && col.fixed !== 'right');
+      }
+    }
+  }
 }
 </script>

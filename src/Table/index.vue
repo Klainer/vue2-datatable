@@ -1,14 +1,17 @@
 <template>
   <!-- complex mode -->
-  <div v-if="useComplexMode" name="ComplexTable" class="-complex-table">
-    <template v-for="x in ['Header', 'Body', 'Footer']">
-      <div v-if="x !== 'Footer' || x === 'Footer' && summary"
+  <div v-if="useComplexMode" name="ComplexTable" class="-complex-table" ref="table">
+    <template v-for="(x, index) in ['Header', 'Body']">
+      <div :key="index" v-if="x !== 'Footer' || x === 'Footer' && summary"
         ref="wrappers" :name="`Table${x}Wrapper`" :class="`-table-${x.toLowerCase()}`"
         :style="[
-          x !== 'Header' && { marginTop: `-${scrollWidth}px` },
-          x === 'Body' && { maxHeight: `${fixHeaderAndSetBodyMaxHeight}px` }
+         
+          x === 'Body' && { height: `${fixHeaderAndSetBodyMaxHeight}px` }
         ]">
-        <div :name="`NormalTable${x}`">
+        <div :name="`NormalTable${x}`" 
+             :style="[ { width: `${mainTableWidth - 17}px`, marginLeft:  `${fixedLeftTableWidth}px` , overflow: 'hidden'} , 
+             x === 'Body' &&  {  width: `${mainTableWidth}px`, marginLeft:  `${fixedLeftTableWidth}px` , height: `${fixHeaderAndSetBodyMaxHeight}px`, overflow: 'scroll' }
+             ]">
           <table-frame v-bind="propsToNormalTable">
             <component :is="`Table${x}`" v-bind="propsToNormalTable" />
           </table-frame>
@@ -16,7 +19,8 @@
         <div v-if="leftFixedColumns.length"
           :name="`LeftFixedTable${x}`"
           class="-left-fixed -fixed-table"
-          :style="{ left: `${offsetLeft}px` }">
+          :style="[ x === 'Body' &&  { height: `${fixHeaderAndSetBodyMaxHeight - 17}px`, overflow: 'hidden' }]"
+         >
           <table-frame v-bind="propsToLeftFixedTable" left-fixed>
             <component :is="`Table${x}`" v-bind="propsToLeftFixedTable" left-fixed />
           </table-frame>
@@ -24,7 +28,7 @@
         <div v-if="rightFixedColumns.length"
           :name="`RightFixedTable${x}`"
           class="-right-fixed -fixed-table"
-          :style="{ right: `-${offsetLeft}px` }">
+          >
           <table-frame v-bind="propsToRightFixedTable" right-fixed>
             <component :is="`Table${x}`" v-bind="propsToRightFixedTable" right-fixed />
           </table-frame>
@@ -33,7 +37,7 @@
     </template>
   </div>
   <!-- simple mode -->
-  <div v-else name="SimpleTable">
+  <div v-else name="SimpleTable" ref="table">
     <table-frame v-bind="propsToNormalTable">
       <table-header v-bind="propsToNormalTable" />
       <table-body v-bind="propsToNormalTable" />
@@ -57,19 +61,49 @@ export default {
   components: { TableFrame, TableHeader, TableBody, TableFooter },
   data: () => ({
     offsetLeft: 0,
-    scrollWidth: getScrollWidth()
+    offsetTop: 0,
+    scrollWidth: getScrollWidth(),
+    tableWidth: 0,
+    fixedLeftTableWidth: 0,
+    fixedRightTableWidth: 0 
   }),
+  methods: {
+    handleResize(e){
+      //console.log(this.$refs);
+      this.tableWidth = this.$refs.table.offsetWidth;
+      this.fixedLeftTableWidth = this.$refs.wrappers[0].querySelector("div.-left-fixed").offsetWidth || 0;
+        //this.fixedRightTableWidth = this.$refs.wrappers[2].querySelector("div.-right-fixed").offsetWidth || 0;
+    
+    }
+  },
+  created() {
+
+  },
+  destroyed() {
+    document.removeEventListener("resize", this.handleResize);
+  },
   mounted () {
     // this allows you to fix columns or `fixHeaderAndSetBodyMaxHeight` dynamically
-    let unsync
+    let unsync;
+    let unsyncH;
     this.$watch('useComplexMode', v => {
       if (v) {
-        unsync = syncScroll(this.$refs.wrappers, offsetLeft => {
-          this.offsetLeft = offsetLeft
+
+        this.$nextTick(() => {
+          window.addEventListener('resize', this.handleResize);
+          window.addEventListener('resize', this.handleResize);
+          this.handleResize()
         })
+        // synchronize vertical horizontal scrolling
+        unsyncH = syncScroll([...this.$refs.wrappers[1].querySelectorAll("div")], () => {})
+        unsync  = syncScroll([
+          this.$refs.wrappers[0].querySelector("div"), 
+          this.$refs.wrappers[1].querySelector("div")], () => {})
       } else {
         unsync && unsync()
+        unsyncH && unsyncH()
       }
+
     }, { immediate: true })
   },
   computed: {
@@ -96,6 +130,9 @@ export default {
     },
     propsToRightFixedTable () {
       return { ...this.$props, columns: this.rightFixedColumns }
+    },
+    mainTableWidth() {
+      return this.tableWidth - this.fixedLeftTableWidth - this.fixedRightTableWidth;
     }
   }
 }
@@ -103,13 +140,25 @@ export default {
 <style>
 .-complex-table {
   position: relative;
+  border: 1px solid #dddddd;
 }
+
+.-complex-table .table-bordered {
+  border: none; 
+}
+
 .-complex-table table {
   background: #fff;
 }
+
 .-table-header, .-table-body, .-table-footer {
-  position: relative;
-  overflow: scroll;
+    position: relative;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.-table-header .table-bordered {
+        border: none;
 }
 .-fixed-table {
   position: absolute;
@@ -120,8 +169,16 @@ export default {
 }
 .-left-fixed {
   box-shadow: 1px 0 5px #ddd;
+  border-bottom: 2px solid #dddddd;
+  border-right: 1px solid #dddddd;
 }
 .-right-fixed {
   box-shadow: 1px 0 5px #ddd;
 }
+
+.tablePagination{
+  border-top: none;
+}
+
+
 </style>

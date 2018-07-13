@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 0 auto; width: 800px">
+  <div style="margin: 0 auto; width: 100%">
     <code>query: {{ query }}</code>
     <datatable v-bind="$data" />
   </div>
@@ -17,7 +17,7 @@ export default {
       { title: 'Username', field: 'name' },
       { title: 'Age', field: 'age', sortable: true },
       { title: 'Email', field: 'email' },
-      { title: 'Country', field: 'country', fixed: 'right' }
+      { title: 'Country', field: 'country'}
     ].map(col => (col.colStyle = { width: '200px' }, col)),
     data: [],
     summary: {},

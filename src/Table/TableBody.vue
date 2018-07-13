@@ -6,7 +6,7 @@
           <td v-if="shouldRenderSelection">
             <multi-select :selection="selection" :row="item" />
           </td>
-          <td v-for="col in columns" :class="col.tdClass" :style="col.tdStyle">
+          <td v-for="(col, index) in tableColumns" :key="index" :class="col.tdClass" :style="col.tdStyle">
             <!-- <td> component (tdComp) -->
             <component
               v-if="col.tdComp"
@@ -56,6 +56,16 @@ export default {
   computed: {
     colLen () {
       return this.columns.length + !!this.selection
+    },
+    tableColumns() {
+      if(this.leftFixed){
+        return this.columns.filter(col => col.fixed === true || col.fixed === 'left' );
+      } else if (this.rightFixed){
+        return this.columns.filter(col => col.fixed === 'right' );
+      } else {
+        console.log("aa");
+        return this.columns.filter(col => col.fixed !== true && col.fixed !== 'left' && col.fixed !== 'right');
+      }
     }
   }
 }
