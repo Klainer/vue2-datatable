@@ -69,13 +69,16 @@ export default {
   }),
   methods: {
     handleResize(e){
-      //console.log(this.$refs);
-      this.tableWidth = this.$refs.table.offsetWidth;
+
+      if(this.$refs.table != null){
+        this.tableWidth = this.$refs.table.offsetWidth;
+      }
+
       if(this.$refs.wrappers != null && this.$refs.wrappers.length > 0){
         this.fixedLeftTableWidth = this.$refs.wrappers[0].querySelector("div.-left-fixed").offsetWidth || 0;
-      }
         //this.fixedRightTableWidth = this.$refs.wrappers[2].querySelector("div.-right-fixed").offsetWidth || 0;
-    
+      }
+  
     }
   },
   created() {
