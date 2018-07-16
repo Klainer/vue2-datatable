@@ -22,7 +22,8 @@ export default {
     data: [],
     summary: {},
     total: 0,
-    query: {}
+    query: {},
+    selection: [],
   }),
   watch: {
     query: {

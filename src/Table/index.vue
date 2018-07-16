@@ -38,10 +38,10 @@
   </div>
   <!-- simple mode -->
   <div v-else name="SimpleTable" ref="table">
-    <table-frame v-bind="propsToNormalTable">
-      <table-header v-bind="propsToNormalTable" />
-      <table-body v-bind="propsToNormalTable" />
-      <table-footer v-if="summary" v-bind="propsToNormalTable" />
+    <table-frame v-bind="propsToNormalTable" is-simple-table>
+      <table-header v-bind="propsToNormalTable" is-simple-table />
+      <table-body v-bind="propsToNormalTable" is-simple-table />
+      <table-footer v-if="summary" v-bind="propsToNormalTable" is-simple-table />
     </table-frame>
   </div>
 </template>
