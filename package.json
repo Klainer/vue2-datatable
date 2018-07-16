@@ -82,10 +82,10 @@
   "license": "MIT",
   "main": "dist/min.js",
   "module": "src/main.js",
-  "name": "vue2-datatable-component",
+  "name": "vue2-datatable-component-mhascak",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OneWayTech/vue2-datatable.git"
+    "url": "git+https://github.com/Klainer/vue2-datatable.git"
   },
   "scripts": {
     "build": "npm run build:examples && npm run build:lib",

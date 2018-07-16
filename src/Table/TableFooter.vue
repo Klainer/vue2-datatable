@@ -2,7 +2,7 @@
   <tfoot v-show="data.length">
     <tr class="-summary-row">
       <td v-if="shouldRenderSelection"></td>
-      <template v-for="(col, idx) in tableColumns">
+      <template v-for="col in tableColumns">
         <!-- display the available fields only -->
         <td v-if="typeof summary[col.field] !== 'undefined'" :class="col.tdClass" :style="col.tdStyle">
           <!-- <td> component (tdComp) -->
@@ -37,7 +37,6 @@ export default {
       } else if (this.rightFixed){
         return this.columns.filter(col => col.fixed === 'right' );
       } else {
-        console.log("aa");
         return this.columns.filter(col => col.fixed !== true && col.fixed !== 'left' && col.fixed !== 'right');
       }
     }

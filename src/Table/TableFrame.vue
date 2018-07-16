@@ -21,7 +21,6 @@ export default {
       } else if (this.rightFixed){
         return this.columns.filter(col => col.fixed === 'right' );
       } else {
-        console.log("aa");
         return this.columns.filter(col => col.fixed !== true && col.fixed !== 'left' && col.fixed !== 'right');
       }
     }
