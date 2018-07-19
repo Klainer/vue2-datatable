@@ -68,7 +68,7 @@ export default {
     tableWidth: 0,
     fixedLeftTableWidth: 0,
     fixedRightTableWidth: 0,
-    tableHeight: this.fixHeaderAndSetBodyMaxHeight,
+    tableHeight: 0,
     isRedered: false,
   }),
   methods: {
