@@ -9,7 +9,7 @@ import mockData from '../_mockData'
 
 export default {
   data: () => ({
-    fixHeaderAndSetBodyMaxHeight: 200,
+    fixHeaderAndSetBodyMaxHeight: 800,
     tblStyle: 'table-layout: fixed', // must
     tblClass: 'table-bordered',
     columns: [
@@ -23,6 +23,10 @@ export default {
     summary: {},
     total: 0,
     query: {},
+    fullHeight: {
+      enabled: true,
+      heightCorrection: -350
+    },
     selection: [],
   }),
   watch: {

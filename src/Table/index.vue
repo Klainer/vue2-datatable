@@ -6,11 +6,11 @@
         ref="wrappers" :name="`Table${x}Wrapper`" :class="`-table-${x.toLowerCase()}`"
         :style="[
          
-          x === 'Body' && { height: `${fixHeaderAndSetBodyMaxHeight}px` }
+          x === 'Body' && { height: `${calcTableHeight}px` }
         ]">
         <div :name="`NormalTable${x}`" 
              :style="[ { width: `${mainTableWidth - 17}px`, marginLeft:  `${fixedLeftTableWidth}px` , overflow: 'hidden'} , 
-             x === 'Body' &&  {  width: `${mainTableWidth}px`, marginLeft:  `${fixedLeftTableWidth}px` , height: `${fixHeaderAndSetBodyMaxHeight}px`, overflow: 'scroll' }
+             x === 'Body' &&  {  width: `${mainTableWidth}px`, marginLeft:  `${fixedLeftTableWidth}px` , height: `${calcTableHeight}px`, overflow: 'scroll' }
              ]">
           <table-frame v-bind="propsToNormalTable">
             <component :is="`Table${x}`" v-bind="propsToNormalTable" />
@@ -19,7 +19,7 @@
         <div v-if="leftFixedColumns.length"
           :name="`LeftFixedTable${x}`"
           class="-left-fixed -fixed-table"
-          :style="[ x === 'Body' &&  { height: `${fixHeaderAndSetBodyMaxHeight - 17}px`, overflow: 'hidden' }]"
+          :style="[ x === 'Body' &&  { height: `${calcTableHeight - 17}px`, overflow: 'hidden' }]"
          >
           <table-frame v-bind="propsToLeftFixedTable" left-fixed>
             <component :is="`Table${x}`" v-bind="propsToLeftFixedTable" left-fixed />
@@ -46,6 +46,8 @@
   </div>
 </template>
 <script>
+
+import debounce from 'lodash/debounce'
 import TableFrame from './TableFrame.vue'
 import TableHeader from './TableHeader.vue'
 import TableBody from './TableBody.vue'
@@ -65,20 +67,34 @@ export default {
     scrollWidth: getScrollWidth(),
     tableWidth: 0,
     fixedLeftTableWidth: 0,
-    fixedRightTableWidth: 0 
+    fixedRightTableWidth: 0,
+    tableHeight: this.fixHeaderAndSetBodyMaxHeight,
+    isRedered: false,
   }),
   methods: {
     handleResize(e){
-
+      // Set Table WIDTH
       if(this.$refs.table != null){
         this.tableWidth = this.$refs.table.offsetWidth;
       }
 
+      // Set Table HEIGHT
+      if(this.fullHeight != null && e != undefined){
+        let heightCorrection = 0;
+        if(this.fullHeight != null && this.fullHeight.heightCorrection != null){
+          heightCorrection = this.fullHeight.heightCorrection;
+        }
+        this.tableHeight = e.currentTarget.innerHeight + heightCorrection;
+      }
+
+      // Set fixed Table width
       if(this.$refs.wrappers != null && this.$refs.wrappers.length > 0){
         this.fixedLeftTableWidth = this.$refs.wrappers[0].querySelector("div.-left-fixed").offsetWidth || 0;
-        //this.fixedRightTableWidth = this.$refs.wrappers[2].querySelector("div.-right-fixed").offsetWidth || 0;
+
+        if(this.$refs.wrappers.length == 3){
+          this.fixedRightTableWidth = this.$refs.wrappers[2].querySelector("div.-right-fixed").offsetWidth || 0;
+        }
       }
-  
     }
   },
   created() {
@@ -95,8 +111,7 @@ export default {
       if (v) {
 
         this.$nextTick(() => {
-          window.addEventListener('resize', this.handleResize);
-          window.addEventListener('resize', this.handleResize);
+          window.addEventListener('resize', debounce(this.handleResize, 150));
           this.handleResize()
         })
         // synchronize vertical horizontal scrolling
@@ -110,6 +125,13 @@ export default {
       }
 
     }, { immediate: true })
+
+  },
+  updated(){
+    if(this.isRedered == false){
+      window.dispatchEvent(new Event("resize"));
+      this.isRedered = true;
+    } 
   },
   computed: {
     visibleColumns () {
@@ -138,6 +160,9 @@ export default {
     },
     mainTableWidth() {
       return this.tableWidth - this.fixedLeftTableWidth - this.fixedRightTableWidth;
+    },
+    calcTableHeight(){
+      return this.fullHeight != null ? this.tableHeight : this.fixHeaderAndSetBodyMaxHeight;
     }
   }
 }

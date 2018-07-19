@@ -10,8 +10,6 @@ import debounce from 'lodash/debounce'
 export default function (els, callback) {
   let currentDriver
 
-  console.log(els);
-  
   function syncScroll(me, others) {
     me
       .on('scroll', throttle(() => {
