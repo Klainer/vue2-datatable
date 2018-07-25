@@ -20,7 +20,18 @@ export default {
     fixHeaderAndSetBodyMaxHeight: Number, // a fancy prop which combines two props into one
     supportNested: [Boolean, String], // support nested components feature (String is only for 'accordion')
     supportBackup: Boolean, // support backup for `HeaderSettings`
-    fullHeight: { type: Object }
+    fullHeight: { type: Object },
+    dataSource: { 
+      type: Object,
+      default: function() {
+        return {
+            read: "",
+            create: "",
+            update: "",
+            delete: ""
+        }
+      }
+    } // read, update, delete, edit 
   },
   data() {
     let datatableInstance = this;

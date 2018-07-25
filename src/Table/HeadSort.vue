@@ -30,8 +30,9 @@ export default {
   },
   watch: {
     query: {
-      handler ({ sort: field, order }) {
-        this.order = field === this.field ? order : ''
+      handler (query) {
+        let obj = query.sort.find(x => x.dataIndx === this.field);
+        obj != null && obj != undefined ? this.order = obj.dir :this.order = "";
       },
       deep: true,
       immediate: true
@@ -40,8 +41,40 @@ export default {
   methods: {
     handleClick () {
       const { query, order } = this
-      query.sort = this.field
-      query.order = this.order = order === 'desc' ? 'asc' : 'desc'
+
+      let obj = null;
+      let filtered = query.sort.filter(x => x.dataIndx === this.field);
+
+      if(event.shiftKey === false){
+        query.sort = filtered;
+      }
+
+      if(filtered.length > 0){
+        obj = filtered[0];
+      }
+
+      let isLast = false;
+      let dir = "desc";
+
+      if(obj != null && obj != undefined){
+          if(obj.dir === 'asc') {
+            query.sort.splice(
+              query.sort.indexOf(obj), 1
+            );
+            this.order = "";
+            return;
+          }
+          dir = obj.dir === 'desc' ? 'asc' : 'desc';
+      }
+
+      let columnSort = { dataIndx: this.field, dir: dir };
+
+      if(obj != null && obj != undefined){
+        obj.dataIndx = this.field;
+        obj.dir = dir;
+      } else {
+        query.sort.push(columnSort);
+      }
     }
   }
 }

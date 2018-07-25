@@ -41,8 +41,15 @@ export default {
   components: { HeaderSettings, Tbl, Pagination, PageSizeSelect },
   created () {
     // init query (make all the properties observable by using `$set`)
-    const q = { limit: 10, offset: 0, sort: '', order: '', ...this.query }
+    const q = { limit: 10, offset: 0, sort: [], filters: [], ...this.query }
     Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]) })
+
+    // if(this.dataSource != null && this.dataSource.read != null){
+    //     this.$http.get(this.dataSource.read).then((response) {
+    //       this.data = response.data;
+    //     });
+    // }
+
   },
   watch: {
     data: {
