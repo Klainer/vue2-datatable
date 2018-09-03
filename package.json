@@ -82,7 +82,7 @@
   ],
   "license": "MIT",
   "main": "dist/min.js",
-  "module": "src/main.js",
+  //"module": "src/main.js",
   "name": "vue2-datatable-component-mhascak",
   "repository": {
     "type": "git",
