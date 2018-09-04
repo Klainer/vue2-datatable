@@ -89,10 +89,23 @@ export default {
 
       // Set fixed Table width
       if(this.$refs.wrappers != null && this.$refs.wrappers.length > 0){
-        this.fixedLeftTableWidth = this.$refs.wrappers[0].querySelector("div.-left-fixed").offsetWidth || 0;
+
+        var leftFixedColumnEl = this.$refs.wrappers[0].querySelector("div.-left-fixed");
+        this.fixedLeftTableWidth = 0;
+
+        if(leftFixedColumnEl != null && leftFixedColumnEl.hasOwnProperty("offsetWidth"))
+        {
+          this.fixedLeftTableWidth = leftFixedColumnEl;
+        } 
 
         if(this.$refs.wrappers.length == 3){
-          this.fixedRightTableWidth = this.$refs.wrappers[2].querySelector("div.-right-fixed").offsetWidth || 0;
+
+          var rightFixedColumnEl = this.$refs.wrappers[2].querySelector("div.-right-fixed");
+          this.fixedRightTableWidth = 0;
+          if(rightFixedColumnEl != null && rightFixedColumnEl.hasOwnProperty("offsetWidth"))
+          {
+            this.fixedRightTableWidth = rightFixedColumnEl;
+          } 
         }
       }
     }
