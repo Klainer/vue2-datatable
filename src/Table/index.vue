@@ -90,21 +90,20 @@ export default {
       // Set fixed Table width
       if(this.$refs.wrappers != null && this.$refs.wrappers.length > 0){
 
-        var leftFixedColumnEl = this.$refs.wrappers[0].querySelector("div.-left-fixed");
+        let leftFixedColumnEl = this.$refs.wrappers[0].querySelector("div.-left-fixed");
         this.fixedLeftTableWidth = 0;
-
-        if(leftFixedColumnEl != null && leftFixedColumnEl.hasOwnProperty("offsetWidth"))
+        if(leftFixedColumnEl)
         {
-          this.fixedLeftTableWidth = leftFixedColumnEl;
+          this.fixedLeftTableWidth = leftFixedColumnEl.offsetWidth || 0;
         } 
 
         if(this.$refs.wrappers.length == 3){
 
-          var rightFixedColumnEl = this.$refs.wrappers[2].querySelector("div.-right-fixed");
+          let rightFixedColumnEl = this.$refs.wrappers[2].querySelector("div.-right-fixed");
           this.fixedRightTableWidth = 0;
-          if(rightFixedColumnEl != null && rightFixedColumnEl.hasOwnProperty("offsetWidth"))
+          if(rightFixedColumnEl)
           {
-            this.fixedRightTableWidth = rightFixedColumnEl;
+            this.fixedRightTableWidth = rightFixedColumnEl.offsetWidth || 0;
           } 
         }
       }
