@@ -84,7 +84,7 @@ export default {
         if(this.fullHeight != null && this.fullHeight.heightCorrection != null){
           heightCorrection = this.fullHeight.heightCorrection;
         }
-        this.tableHeight = e.currentTarget.innerHeight + heightCorrection;
+        this.tableHeight = window.innerHeight + heightCorrection;
       }
 
       // Set fixed Table width
@@ -142,7 +142,16 @@ export default {
   },
   updated(){
     if(this.isRedered == false){
-      window.dispatchEvent(new Event("resize"));
+
+      if(typeof(Event) === 'function') {
+          var event = new Event('resize');
+      }else{
+          var event = document.createEvent('Event');
+          event.initEvent('resize', true, true);
+      }
+      
+      window.dispatchEvent(event);
+
       this.isRedered = true;
     } 
   },
