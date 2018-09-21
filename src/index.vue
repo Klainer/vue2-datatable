@@ -20,7 +20,6 @@
 
           <div  class="pull-right grid-pagination-total" >
             {{ $i18nForDatatable('Total') }} {{ total }} 
-            <!-- {{ $i18nForDatatable(',') }} -->
           </div>
         
         </div>

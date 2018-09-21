@@ -70,6 +70,8 @@ export default {
     fixedRightTableWidth: 0,
     tableHeight: 0,
     isRedered: false,
+    unsync: null,
+    unsyncH: null
   }),
   methods: {
     handleResize(e){
@@ -113,27 +115,27 @@ export default {
 
   },
   destroyed() {
-    document.removeEventListener("resize", this.handleResize);
+    window.removeEventListener("resize", this.handleResize);
+    this.unsync && this.unsync();
+    this.unsyncH && this.unsyncH();
   },
   mounted () {
     // this allows you to fix columns or `fixHeaderAndSetBodyMaxHeight` dynamically
-    let unsync;
-    let unsyncH;
     this.$watch('useComplexMode', v => {
       if (v) {
 
         this.$nextTick(() => {
-          window.addEventListener('resize', debounce(this.handleResize, 150));
+          window.addEventListener('resize', this.handleResize);
           this.handleResize()
         })
         // synchronize vertical horizontal scrolling
-        unsyncH = syncScroll([...this.$refs.wrappers[1].querySelectorAll("div")], () => {})
-        unsync  = syncScroll([
+        this.unsyncH = syncScroll([...this.$refs.wrappers[1].querySelectorAll("div")], () => {})
+        this.unsync  = syncScroll([
           this.$refs.wrappers[0].querySelector("div"), 
           this.$refs.wrappers[1].querySelector("div")], () => {})
       } else {
-        unsync && unsync()
-        unsyncH && unsyncH()
+         this.unsync && this.unsync()
+         this.unsyncH && this.unsyncH()
       }
 
     }, { immediate: true })
@@ -150,6 +152,7 @@ export default {
       }
       
       window.dispatchEvent(event);
+      event = null;
 
       this.isRedered = true;
     } 

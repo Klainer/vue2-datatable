@@ -1,6 +1,6 @@
 <template>
   <div class="btn-group" name="HeaderSettings">
-    <button class="btn btn-default dropdown-toggle" ref="dropdownBtn" type="button">
+    <button class="btn btn-default dropdown-toggle" @click.stop.prevent="toggle" ref="dropdownBtn" type="button">
       <i class="fa" :class="[usingBak && 'text-info', processingCls || 'fa-cog']"></i>
       <span class="caret"></span>
     </button>
@@ -75,11 +75,15 @@ export default {
     replaceWith(this.columns, backup)
     this.usingBak = true
   },
+  destroyed() {
+    $(document).off("click.mhclick");
+   // $(this.$refs.dropdownBtn).off('click', this.toggle)
+  },
   mounted () {
     // control dropdown manually (refers to http://jsfiddle.net/rj3k550m/3)
     const $el = $(this.$el)
-    $(this.$refs.dropdownBtn).on('click', this.toggle)
-    $(document).on('click', e => {
+
+    $(document).off("click.mhclick").on('click.mhclick', e => {
       $(e.target).closest($el).length || $el.removeClass('open')
     })
   },
@@ -107,12 +111,12 @@ export default {
     },
     backup () {
       saveToLS(this.storageKey, this.columns)
-      this.showProcessing()
+      //this.showProcessing()
       this.usingBak = true
     },
     rmBackup () {
       rmFromLS(this.storageKey)
-      this.showProcessing()
+      ///this.showProcessing()
       this.usingBak = false
       
       replaceWith(this.columns, parseStr(this.origSettings)) // restore
@@ -120,13 +124,13 @@ export default {
     toggle () {
       $(this.$el).toggleClass('open')
     },
-    showProcessing () {
-      ['fa-spinner fa-pulse', 'fa-check', ''].forEach((cls, idx) => {
-        setTimeout(() => {
-          this.processingCls = cls
-        }, idx * 1000)
-      })
-    }
+    // showProcessing () {
+    //   ['fa-spinner fa-pulse', 'fa-check', ''].forEach((cls, idx) => {
+    //     setTimeout(() => {
+    //       this.processingCls = cls
+    //     }, idx * 1000)
+    //   })
+    // }
   }
 }
 </script>

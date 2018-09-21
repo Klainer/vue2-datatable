@@ -48,7 +48,7 @@
           <basic v-if="showTab === 'basic'" />
         </div>
         <div class="tab-pane" :class="{ active: showTab === 'advanced' }">
-          <advanced v-if="showTab === 'advanced'" />
+          <advanced v-if="showTab === 'advanced'" /> 
         </div>
         <div class="tab-pane" :class="{ active: showTab === 'fixed' }">
           <fixed v-if="showTab === 'fixed'" />
