@@ -73,5 +73,5 @@
     "start": "vue build --config build/examples.js",
     "test": "ava"
   },
-  "version": "1.0"
+  "version": "3.0.0"
 }
