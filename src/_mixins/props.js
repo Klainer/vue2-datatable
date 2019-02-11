@@ -1,5 +1,6 @@
 export default {
   props: {
+    gridName: { type: String, required: false, default: '' },
     columns: { type: Array, required: true },
     data: { type: Array, required: true }, // rows
     total: { type: Number, required: true },
@@ -12,43 +13,44 @@ export default {
     pageSizeOptions: {
       type: Array,
       default: function() {
-        return [10, 20, 40, 80, 100];
+        return [10, 20, 40, 50, 80, 100]
       }
     },
+    pending: { type: Boolean, default: false },
     tblClass: [String, Object, Array], // classes for <table>
     tblStyle: [String, Object, Array], // inline styles for <table>
     fixHeaderAndSetBodyMaxHeight: Number, // a fancy prop which combines two props into one
     supportNested: [Boolean, String], // support nested components feature (String is only for 'accordion')
     supportBackup: Boolean, // support backup for `HeaderSettings`
     fullHeight: { type: Object },
-    dataSource: { 
+    dataSource: {
       type: Object,
       default: function() {
         return {
-            read: "",
-            create: "",
-            update: "",
-            delete: ""
+          read: '',
+          create: '',
+          update: '',
+          delete: ''
         }
       }
-    } // read, update, delete, edit 
+    } // read, update, delete, edit
   },
   data() {
-    let datatableInstance = this;
-    while (datatableInstance.$options.name !== "Datatable") {
-      datatableInstance = datatableInstance.$parent;
+    let datatableInstance = this
+    while (datatableInstance.$options.name !== 'Datatable') {
+      datatableInstance = datatableInstance.$parent
     }
     return {
       // the source of dynamic components (thComp / tdComp / nested components)
       comp: datatableInstance.$parent.$options.components
-    };
+    }
   },
   methods: {
     // usage: <component :is="forDynCompIs(XXX)" ... />
     forDynCompIs(component) {
       // according to https://vuejs.org/v2/guide/components.html#Dynamic-Components
       // dynamic components can be names (string) or component objects
-      return typeof component === "object" ? component : this.comp[component];
+      return typeof component === 'object' ? component : this.comp[component]
     }
   }
-};
+}

@@ -6,9 +6,11 @@
 </template>
 <script>
 import mockData from '../_mockData'
+import { setTimeout } from 'timers';
 
 export default {
   data: () => ({
+    gridName: 'fixedGrid2',
     fixHeaderAndSetBodyMaxHeight: 800,
     tblStyle: 'table-layout: fixed', // must
     tblClass: 'table-bordered',
@@ -21,20 +23,27 @@ export default {
     ].map(col => (col.colStyle = { width: '200px' }, col)),
     data: [],
     summary: {},
+    pending: true,
     total: 0,
     query: {},
+    supportBackup: true,
     fullHeight: {
       enabled: true,
       heightCorrection: -350
     },
     selection: [],
   }),
+  mounted(){
+    setTimeout(() => {
+      this.pending = false;
+    }, 2000);
+  },
   watch: {
     query: {
       handler (query) {
         mockData(query).then(({ rows, total, summary }) => {
-          this.data = rows
-          this.total = total
+          this.data = rows.slice(1, 10);
+          this.total = 10
           this.summary = summary
         })
       },

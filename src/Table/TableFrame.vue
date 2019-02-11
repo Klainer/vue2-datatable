@@ -1,8 +1,8 @@
 <template>
   <table class="table table-striped table-hover" style="margin-bottom: 0" :class="tblClass" :style="tblStyle">
     <colgroup>
-      <col v-if="shouldRenderSelection" style="width: 30px"></col>
-      <col v-for="col in tableColumns" :class="col.colClass" :style="col.colStyle"></col>
+      <col v-if="shouldRenderSelection" style="width: 30px" />
+      <col v-for="(col, index) in tableColumns" :class="col.colClass" :key="index" :style="col.colStyle" />
     </colgroup>
     <slot />
   </table>

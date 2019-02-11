@@ -1,12 +1,18 @@
 <template>
   <tbody>
     <template v-if="data.length">
-      <template v-for="item in data">
-        <tr>
+      <template v-for="(item, indexData) in data">
+        <tr :key="indexData">
           <td v-if="shouldRenderSelection">
             <multi-select :selection="selection" :row="item" />
           </td>
-          <td v-for="(col, index) in tableColumns" :key="index" :class="col.tdClass" :style="col.tdStyle">
+          <td v-for="(col, index) in tableColumns" :key="index" 
+            :class="col.tdClass" 
+            :title="item[col.field]"
+            v-tippy="{ arrow : true, interactive : true,  duration: 0, trigger: 'manually' }"
+            @mouseenter="onTippyMouseEnter"
+            @mouseleave="onTippyMouseLeave"
+            :style="col.tdStyle">
             <!-- <td> component (tdComp) -->
             <component
               v-if="col.tdComp"
@@ -22,7 +28,7 @@
             </template>
           </td>
         </tr>
-        <transition name="fade">
+        <transition name="fade" :key="indexData">
           <tr v-if="item.__nested__ && item.__nested__.visible">
             <td :colspan="colLen">
               <!-- nested component -->
@@ -39,7 +45,7 @@
     </template>
     <tr v-else-if="!leftFixed && !rightFixed">
       <td :colspan="colLen" class="text-center text-muted">
-        ( {{ $i18nForDatatable('No Data') }} )
+        {{ $i18nForDatatable('No Data') }} 
       </td>
     </tr>
   </tbody>
@@ -53,6 +59,18 @@ export default {
   name: 'TableBody',
   components: { MultiSelect },
   mixins: [props, shouldRenderSelection],
+  methods: {
+    onTippyMouseEnter(e){
+      if(e.target._tippy != null && (e.target.offsetWidth < e.target.scrollWidth)){
+        e.target._tippy.show();
+      }
+    },
+    onTippyMouseLeave(e, vNode){
+      if(e.target._tippy != null && (e.target.offsetWidth < e.target.scrollWidth)){
+        e.target._tippy.hide();
+      }
+    }
+  },
   computed: {
     colLen () {
       return this.columns.length + !!this.selection

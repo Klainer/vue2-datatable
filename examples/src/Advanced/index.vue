@@ -79,6 +79,10 @@ export default {
       deep: true
     }
   },
+  beforeDestroy(){
+    this.xprops.eventbus.$off()
+    this.xprops.eventbus = null;
+  },
   methods: {
     handleQueryChange () {
       mockData(this.query).then(({ rows, total, summary }) => {

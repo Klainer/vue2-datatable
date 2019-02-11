@@ -2,9 +2,9 @@
   <tfoot v-show="data.length">
     <tr class="-summary-row">
       <td v-if="shouldRenderSelection"></td>
-      <template v-for="col in tableColumns">
+      <template v-for="(col, index) in tableColumns">
         <!-- display the available fields only -->
-        <td v-if="typeof summary[col.field] !== 'undefined'" :class="col.tdClass" :style="col.tdStyle">
+        <td :key="index" v-if="typeof summary[col.field] !== 'undefined'" :class="col.tdClass" :style="col.tdStyle">
           <!-- <td> component (tdComp) -->
           <component
             v-if="col.tdComp"
@@ -18,7 +18,7 @@
             {{ summary[col.field] }}
           </template>
         </td>
-        <td v-else></td>
+        <td v-else :key="index"></td>
       </template>
     </tr>
   </tfoot>

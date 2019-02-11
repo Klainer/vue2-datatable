@@ -33,14 +33,27 @@ import Tbl from './Table/index.vue'
 import Pagination from './Pagination.vue'
 import PageSizeSelect from './PageSizeSelect.vue'
 import props from './_mixins/props'
+import keyGen from './_utils/keyGen'
+import replaceWith from './_utils/replaceWith'
+import { parseStr, stringify, saveToLS, rmFromLS, getFromLS } from './_utils/localstorage'
 
 export default {
   name: 'Datatable',
   mixins: [props],
   components: { HeaderSettings, Tbl, Pagination, PageSizeSelect },
-  created () {
+  created() {
+
     // init query (make all the properties observable by using `$set`)
-    const q = { limit: 10, offset: 0, sort: [], filters: [], ...this.query }
+    let q = null;
+
+    if(this.supportBackup === true && this.gridName != null && this.gridName != ""){
+      q = getFromLS(this.storageKey)
+    }
+
+    if (!q) {
+      q = { limit: 20, offset: 0, sort: [], filters: [], ...this.query }
+    } 
+
     Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]) })
 
     // if(this.dataSource != null && this.dataSource.read != null){
@@ -50,7 +63,26 @@ export default {
     // }
 
   },
+  updated() {
+    this.isFirstInit = false;
+  },
+  data() {
+    return {
+      isFirstInit: true,
+      storageKey: this.supportBackup === true ? keyGen(stringify(this.columns)) + "-" + this.gridName : ''
+    }
+  },
   watch: {
+    query: {
+      //immediate: true,
+      handler (state) {
+ 
+        if(this.supportBackup && !this.isFirstInit && this.gridName != null && this.gridName != ""){
+          saveToLS(this.storageKey, this.query);
+        }
+      },
+      deep: true
+    },
     data: {
       handler (data) {
         const { supportNested } = this
@@ -156,4 +188,110 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.tooltip {
+  display: block !important;
+  z-index: 10000;
+}
+
+.tooltip .tooltip-inner {
+  background: black;
+  color: white;
+  border-radius: 16px;
+  padding: 5px 10px 4px;
+}
+
+.tooltip .tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+  border-color: black;
+  z-index: 1;
+}
+
+.tooltip[x-placement^="top"] {
+  margin-bottom: 5px;
+}
+
+.tooltip[x-placement^="top"] .tooltip-arrow {
+  border-width: 5px 5px 0 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tooltip[x-placement^="bottom"] {
+  margin-top: 5px;
+}
+
+.tooltip[x-placement^="bottom"] .tooltip-arrow {
+  border-width: 0 5px 5px 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tooltip[x-placement^="right"] {
+  margin-left: 5px;
+}
+
+.tooltip[x-placement^="right"] .tooltip-arrow {
+  border-width: 5px 5px 5px 0;
+  border-left-color: transparent !important;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  left: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.tooltip[x-placement^="left"] {
+  margin-right: 5px;
+}
+
+.tooltip[x-placement^="left"] .tooltip-arrow {
+  border-width: 5px 0 5px 5px;
+  border-top-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  right: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.tooltip.popover .popover-inner {
+  background: #f9f9f9;
+  color: black;
+  padding: 24px;
+  border-radius: 5px;
+  box-shadow: 0 5px 30px rgba(black, .1);
+}
+
+.tooltip.popover .popover-arrow {
+  border-color: #f9f9f9;
+}
+
+.tooltip[aria-hidden='true'] {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .15s, visibility .15s;
+}
+
+.tooltip[aria-hidden='false'] {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .15s;
+}
+
 </style>
