@@ -11,34 +11,40 @@ export default function (els, callback) {
   let currentDriver
 
   function syncScroll(me, others) {
-    me
-      .on('scroll', throttle(() => {
-        if (currentDriver && currentDriver !== me) return
-        currentDriver = me
 
-        let offsetLeft = me.scrollLeft()
-        let offsetTop = me.scrollTop()
+    var onScrollSync = throttle(() => {
+      if (currentDriver && currentDriver !== me) return
+      currentDriver = me
 
-        others.scrollLeft(offsetLeft)
-        others.scrollTop(offsetTop)
+      let offsetLeft = me.scrollLeft;
+      let offsetTop = me.scrollTop;
 
-        callback(offsetLeft)
-      }))
-      // scroll stops
-      .on('scroll', debounce(() => {
-        currentDriver = null
-      }, 150))
+      for(var i = 0; i < others.length; i++){
+        others[i].scrollLeft = offsetLeft;
+        others[i].scrollTop = offsetTop;
+      }
+
+      callback(offsetLeft)
+    });
+
+    var onScrollStop = debounce(() => {
+      currentDriver = null
+    }, 150);
+
+    me.addEventListener("scroll", onScrollSync);
+    me.addEventListener("scroll", onScrollStop)
 
     // unlistener
     return () => {
-      me.off('scroll')
+      me.removeEventListener("scroll", onScrollSync);
+      me.removeEventListener("scroll", onScrollStop);
     }
   }
   
   const unlisteners = els.map((me, idx) => {
     let others = els.slice()
     others.splice(idx, 1) // exclude me
-    return syncScroll($(me), $(others))
+    return syncScroll(me, others)
   })
 
   // unsync
